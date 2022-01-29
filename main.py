@@ -1,6 +1,11 @@
-import pandas as pd
+from food_ui import *
 
-df=pd.read_csv("data.tsv",sep="\t",
-               usecols=["product_name","brands","additives"])
 
-df=df.dropna()
+def main():    
+    app = FoodPredictor()
+    app.run()    
+
+
+if __name__ == "__main__":
+    main()
+
