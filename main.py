@@ -17,11 +17,7 @@ def parse_additives(expr):
     return l_expr
     
 
-def main():
-    global df, hist, names
-    
-    df = read_data("data.tsv")
-    df["parsed_additives"] = df["additives"].apply(parse_additives)
+def clear_data(df):
     df["length"] = df["parsed_additives"].apply(lambda x: len(x))
     df = df[df["length"] > 0]    
     print("[INFO] Data Parsed")
@@ -55,7 +51,15 @@ def main():
     df = df.reset_index()
     df = df.drop(columns=["index", "parsed_additives", "length"])
     print("[INFO] Dataframe is created")
-    
+    return df
+
+
+def main():
+    global df
+    df = read_data("data.tsv")
+    df["parsed_additives"] = df["additives"].apply(parse_additives)
+    df = clear_data(df)
+
 
 if __name__ == "__main__":
     main()
