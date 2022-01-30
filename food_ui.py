@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from food_pred import *
 
+
 class FoodPredictor:
     class State(Enum):
         Start = auto()
@@ -76,14 +77,14 @@ class FoodPredictor:
             show_item(x)
             y = get_grade()
             if y < 4:
-                X = np.array(x["additives"])
-                y = y - 2
-                self.ai.update(np.array(X), np.array(y))
+                self.vars["X"].append(np.array(x["additives"]))
+                self.vars["y"].append(y-2)
+                # breakpoint()
+                self.ai.update(np.array(self.vars["X"]), np.array(self.vars["y"]))
         
     def __transition(self, next_state):
-        self.vars = {}
-        
         if next_state == FoodPredictor.State.Train:
+            self.vars = {}
             self.vars["item"] = 0
             self.vars["X"] = []
             self.vars["y"] = []
