@@ -31,7 +31,7 @@ class Predictor:
     def get_best_random(self, n=512, threshold=0.8,max_iterations=5):
         for i in range(max_iterations):
             tem=[randint(0, len(self.data.index)-1) for i in range(n)]
-            X=self.data.iloc(tem)[2]
+            X=self.data.iloc(tem)["additives"]
             probabilties=self.model.predict_proba(X)[:,self.model.classes_.index("1")]
             max_value=max(probabilties)
             max_index=probabilties.index(max_value)
