@@ -10,7 +10,7 @@ class FoodPredictor:
         Train = auto()
         Test = auto()
     
-    def __init__(self, input_len=128, test_len=10):
+    def __init__(self, input_len=128, test_len=15):
         self.state = FoodPredictor.State.Start
         self.input_len = input_len
         self.test_len = test_len

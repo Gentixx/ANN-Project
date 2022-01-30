@@ -17,10 +17,10 @@ class Predictor:
             self.model.fit(X,y)
         else:
             svc_tuned_parameters = [
-                {"kernel": ["rbf"], "gamma": np.linspace(0.01, 10,num=100), "C": np.linspace(1, 100,num=100)},
-                {"kernel": ["linear"], "C": np.linspace(1, 100,num=100)},
+                {"kernel": ["rbf"], "gamma": np.linspace(0.01, 10,num=100), "C": np.linspace(1, 100,num=100), "probability": [True]},
+                {"kernel": ["linear"], "C": np.linspace(1, 100,num=100),"probability": [True]},
             ]
-            temp_model = HalvingRandomSearchCV(self.model, svc_tuned_parameters).fit(X, y)
+            temp_model = HalvingRandomSearchCV(self.model, svc_tuned_parameters,cv=2).fit(X, y)
             # print(temp_model.best_params_)
             # print(temp_model.best_score_)
             self.model=SVC(**temp_model.best_params_).fit(X, y)
@@ -28,13 +28,17 @@ class Predictor:
     def update(self, X, y):
         self.init_train(X,y,use_predetermined=True)
     
-    def get_best_random(self, n=512, threshold=0.8,max_iterations=5):
+    def get_best_random(self, n=512, threshold=0.6,max_iterations=5):
         for i in range(max_iterations):
             tem=[randint(0, len(self.data.index)-1) for i in range(n)]
-            X=self.data.iloc(tem)["additives"]
-            probabilties=self.model.predict_proba(X)[:,self.model.classes_.index("1")]
+            M=self.data["additives"].iloc[tem].to_numpy()
+            X1=[]
+            for i in M:
+                X1.append(i)
+            X=np.array(X1)
+            probabilties=self.model.predict_proba(X)[:,np.where(self.model.classes_==1)[0][0]]
             max_value=max(probabilties)
-            max_index=probabilties.index(max_value)
+            max_index=np.where(probabilties==max_value)[0][0]
             if max_value>threshold:
                 break
         
